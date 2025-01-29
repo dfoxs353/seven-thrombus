@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Footer, Header } from "../../shared/ui";
+import { Footer, Header } from "@shared/ui";
 
 type TLayoutProps = {
     children: ReactNode
