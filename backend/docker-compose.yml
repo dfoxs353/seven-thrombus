@@ -47,11 +47,11 @@ services:
     networks:
       - local
     volumes:
-      - ./accounts/config.yml:/config.yml
+      - ./users/config.yml:/config.yml
     environment:
       - CONFIG_PATH=/config.yml
     ports:
-      - 8080:8080
+      - 8085:8080
 
 networks:
   local:
