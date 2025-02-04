@@ -1,0 +1,59 @@
+services:
+  # сервис БД
+  postgres:
+    image: dockerhub.timeweb.cloud/library/postgres:latest
+    container_name: postgres
+    ports:
+      - 55432:5432
+    restart: always
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USERNAME=postgres
+    networks: 
+      - local
+      - elk
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # сервис для применения миграций в базе
+  migrate:
+    image: dockerhub.timeweb.cloud/migrate/migrate:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - local 
+    volumes:
+      - ./migrations/:/migrations
+    command: ["-path", "./migrations/", "-database", "postgres://${PGUSER}:${PGPASSWORD}@postgres:5432/${PGDB}?sslmode=disable", "up"]
+    environment:
+      - PGUSER=postgres
+      - PGPASSWORD=postgres
+      - PGDB=postgres
+
+  # сервис аккаунтов
+  users:
+    build:
+      context: ./users
+    container_name: users
+    depends_on:
+      - migrate
+    restart: always
+    networks:
+      - local
+    volumes:
+      - ./accounts/config.yml:/config.yml
+    environment:
+      - CONFIG_PATH=/config.yml
+    ports:
+      - 8080:8080
+
+networks:
+  local:
+    driver: bridge

@@ -1,0 +1,26 @@
+postgres:
+  host: postgres
+  port: 5432
+  username: postgres
+  password: postgres
+  database: postgres
+
+server:
+  host: "0.0.0.0"
+  port: 8080
+  shutdownTimeout: 10
+
+grpcServer:
+  host: "0.0.0.0"
+  port: 3030
+
+tokens:
+  tokenSecret: 2acd26686febd769ac1c758470196a49
+  accessTTL: 900
+  refreshTTL: 2592000
+
+# если написать бессмыслицу, то дефолтной роль будет считаться user
+defaultRoles: ["user"]
+
+# соль для хэширования паролей
+cost: 1
