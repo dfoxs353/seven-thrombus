@@ -20,7 +20,7 @@ tokens:
   refreshTTL: 2592000
 
 # если написать бессмыслицу, то дефолтной роль будет считаться user
-defaultRoles: ["user"]
+defaultRoles: ["student"]
 
 # соль для хэширования паролей
 cost: 1
