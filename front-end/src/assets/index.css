@@ -1,1 +1,77 @@
 @import "tailwindcss";
+@theme {
+  --white: #fff;
+  --main-accent: #509BF8;
+  --additional-light: #F8F9FD;
+  --additional-dark: #949494;
+  --error: #F86650;
+  --approve: #09E258;
+}
+
+@layer components {
+
+  .button {
+    padding: 14px 32px;
+    border-radius: 12px;
+    transition: background-color 0.3s ease-out, color 0.3s ease-out;
+    cursor: pointer;
+  }
+
+  .button-primary {
+    background-color: #3B8FF7;
+    color: var(--white);
+  }
+
+  .button-primary:hover {
+    background: #096EEB;
+  }
+
+  .button-secondary {
+    background-color: var(--white);
+    color: var(--main-accent);
+    border: 1px solid #509BF8;
+  }
+
+  .button-secondary:hover {
+    background-color: #0965D8;
+    color: var(--white);
+  }
+
+  .heading {
+    font-weight: 500;
+    font-size: 2rem;
+    line-height: 2.125rem;
+    text-align: center;
+  }
+
+  .input {
+    background-color: var(--additional-light);
+    padding: 16px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--additional-light);
+    outline: none;
+    color: var(--additional-dark);
+    font-weight: 400;
+    font-size: 0.9rem;
+  }
+
+  .input::placeholder {
+    font-size: 0.925rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    outline: none;
+  }
+
+  .input:focus,
+  .input:focus-visible,
+  .input:active {
+    border-color: var(--main-accent);
+  }
+
+  .inline {
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.2rem;
+    color: var(--additional-dark)
+  }
+}
