@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"main/grpc"
-	_ "main/http/swagger"
+	"main/http/swagger"
 	v1 "main/http/v1"
 	"main/internal/jwt"
 	"main/internal/middleware"
@@ -40,6 +40,8 @@ type Tokens struct {
 	AccessTTL  time.Duration `mapstructure:"accessTTL"`
 	RefreshTTL time.Duration `mapstructure:"refreshTTL"`
 }
+
+const ServiceName = "users"
 
 // @title           Accounts MS
 // @version         1.0
@@ -97,10 +99,6 @@ func main() {
 		createUser = v1.CreateUser(userService)
 		updateUser = v1.UpdateUser(userService)
 		deleteUser = v1.DeleteUserSoft(userRepo)
-
-		//doctor handlers
-		getDoctor  = v1.GetDoctor(userRepo)
-		getDoctors = v1.GetDoctors(userRepo)
 	)
 
 	// signup default users
@@ -137,9 +135,7 @@ func main() {
 	srv.Put("/api/accounts/{id}", middleware.WrapAuth(mw.WrapErrDetail(updateUser), jwtManager, []users.Role{users.Admin}))
 	srv.Delete("/api/accounts/{id}", middleware.WrapAuth(mw.WrapErrDetail(deleteUser), jwtManager, []users.Role{users.Admin}))
 
-	srv.Get("/api/doctors", middleware.WrapAuth(mw.WrapErrDetail(getDoctors), jwtManager, nil))
-	srv.Get("/api/doctors/{id}", middleware.WrapAuth(mw.WrapErrDetail(getDoctor), jwtManager, nil))
-
+	swagger.SwaggerInfo.BasePath = fmt.Sprintf("/%s/", ServiceName)
 	srv.Get("/swagger/{*}", cors.AllowAll().Handler(http_swagger.Handler(http_swagger.PersistAuthorization(true))))
 
 	// инициализация grpc сервера
@@ -158,7 +154,7 @@ func main() {
 		slog.Info("grpc server successfully started", "addr", addr)
 
 		if err := grpcSrv.Serve(lis); err != nil {
-			slog.ErrorContext(ctx, "failed ti serve grpc server", "err", err)
+			slog.ErrorContext(ctx, "failed to serve grpc server", "err", err)
 			cancel()
 			return
 		}
