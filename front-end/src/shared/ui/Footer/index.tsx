@@ -1,7 +1,3 @@
 export const Footer = () => {
-    return (
-        <footer className={'w-screen h-10'}>
-            footer
-        </footer>
-    )
-}
+  return <footer className={'h-10 w-screen'}>footer</footer>;
+};

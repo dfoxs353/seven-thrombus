@@ -3,16 +3,15 @@ import { TTokenPair } from '../models/TokenPair';
 import { get } from '../api/apiAbstractions';
 
 // Вынести в env, пока в падлу
-const BASE_URL = 'http://85.192.61.121:8085/api'
+const BASE_URL = 'http://85.192.61.121:8085/api';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 });
-
 
 export const refreshAccessTokenFn = async () => {
   const response = await get<TTokenPair>('/refresh');

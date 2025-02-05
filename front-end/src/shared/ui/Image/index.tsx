@@ -1,11 +1,11 @@
-import clsx from "clsx"
-import { HTMLAttributes } from "react"
+import clsx from 'clsx';
+import { HTMLAttributes } from 'react';
 
 type TImageProps = {
-  classname?: string,
-  image: string,
-} & HTMLAttributes<HTMLImageElement>
+  classname?: string;
+  image: string;
+} & HTMLAttributes<HTMLImageElement>;
 
 export const Image = ({ image, classname, ...props }: TImageProps) => (
-  <img src={image} className={clsx('w-full h-auto', classname)} {...props} />
-)
+  <img src={image} className={clsx('h-auto w-full', classname)} {...props} />
+);

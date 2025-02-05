@@ -1,3 +1,3 @@
-import { TUser } from "./User";
+import { TUser } from './User';
 
-export type TUpdateProfile = Omit<TUser, 'id' | 'roles' | 'username'>
+export type TUpdateProfile = Omit<TUser, 'id' | 'roles' | 'username'>;

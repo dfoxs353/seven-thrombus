@@ -1,4 +1,4 @@
 export const ROUTES = {
-  "HOME": "/",
-  "ABOUT": "/about",
-}
+  HOME: '/',
+  ABOUT: '/about'
+};

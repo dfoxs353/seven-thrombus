@@ -1,1 +1,1 @@
-export type TRole = 'admin' | 'teacher' | 'student'
+export type TRole = 'admin' | 'teacher' | 'student';

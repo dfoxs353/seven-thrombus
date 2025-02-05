@@ -1,3 +1,3 @@
-import { TUser } from "./User";
+import { TUser } from './User';
 
-export type TSignIn = Pick<TUser, 'password'> & Pick<TUser, 'username'>
+export type TSignIn = Pick<TUser, 'password'> & Pick<TUser, 'username'>;
