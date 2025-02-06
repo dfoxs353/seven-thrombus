@@ -21,6 +21,12 @@ export default defineConfig({
     }
   },
   server: {
-    cors: false
+    proxy: {
+      '/api': {
+        target: 'http://85.192.61.121:8085',
+        changeOrigin: true,
+        secure: false
+      }
+    }
   }
 });
