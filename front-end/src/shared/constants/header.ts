@@ -1,14 +1,14 @@
-import { ROUTES } from "./routes";
+import { ROUTES } from './routes';
 
 export const HEADER = {
   navLinks: [
     {
-      title: "Home",
+      title: 'Home',
       href: ROUTES.HOME
     },
     {
-      title: "About",
+      title: 'About',
       href: ROUTES.ABOUT
-    },
+    }
   ]
-}
+};
