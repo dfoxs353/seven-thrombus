@@ -16,6 +16,7 @@
       background-color 0.3s ease-out,
       color 0.3s ease-out;
     cursor: pointer;
+    min-height: 52px;
   }
 
   .button-primary {
@@ -27,6 +28,9 @@
     background: #096eeb;
   }
 
+  .button-primary:disabled {
+    pointer-events: none;
+  }
   .button-secondary {
     background-color: var(--white);
     color: var(--main-accent);
