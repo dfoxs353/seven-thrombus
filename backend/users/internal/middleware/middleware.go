@@ -31,9 +31,9 @@ func WrapAuth(
 			return
 		}
 
-		token := parts[1]
+		t := parts[1]
 
-		payload, err := validator.ParseToken(token)
+		payload, err := validator.ParseToken(t)
 		if err != nil {
 			slog.ErrorContext(r.Context(), "error while wrapping auth", "err", err)
 			middleware.SendError(w, errorx.Unauthorized)
@@ -51,7 +51,7 @@ func WrapAuth(
 			return
 		}
 
-		handler.ServeHTTP(w, r.WithContext(ContextWithToken(r.Context(), Token{payload.Uid, payload.Roles})))
+		handler.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), tokenKey, Token{payload.Uid, payload.Roles})))
 	}
 }
 
@@ -62,13 +62,13 @@ type Token struct {
 
 type Key string
 
-const token Key = "token"
+const tokenKey Key = "token"
 
 func ContextWithToken(ctx context.Context, t Token) context.Context {
-	return context.WithValue(ctx, token, t)
+	return context.WithValue(ctx, tokenKey, t)
 }
 
 func TokenFromContext(ctx context.Context) (Token, bool) {
-	token, ok := ctx.Value(token).(Token)
-	return token, ok
+	t, ok := ctx.Value(tokenKey).(Token)
+	return t, ok
 }

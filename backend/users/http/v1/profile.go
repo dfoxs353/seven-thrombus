@@ -5,8 +5,11 @@ import (
 	"main/internal/users"
 	"net/http"
 
+	middleware "main/internal/middleware"
+
+	middleware_pkg "gitlab.com/volgaIt/packages/middleware"
+
 	"gitlab.com/volgaIt/packages/errorx"
-	middleware "gitlab.com/volgaIt/packages/middleware"
 )
 
 // @summary Получение профиля пользователя
@@ -19,7 +22,7 @@ import (
 // @Success 200 {object} users.User
 // @Failure 400 {object} errorx.ResponseError
 // @Security ApiKeyAuth
-func Profile(repo *users.Repo) middleware.ErrorHandler {
+func Profile(repo *users.Repo) middleware_pkg.ErrorHandler {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		token, ok := middleware.TokenFromContext(r.Context())
 		if !ok {
