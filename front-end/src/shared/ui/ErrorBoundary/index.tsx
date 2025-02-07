@@ -31,7 +31,6 @@ export const ErrorBoundary = ({ message }: TErrorBoundaryProps) => {
       {secondsTillTheEnd !== 0 && (
         <section className="absolute right-3 bottom-5 flex w-full max-w-[200px] flex-col border-2 border-red-500">
           {message}
-          {secondsTillTheEnd}
           <div
             className="h-4 bg-red-500"
             style={{
