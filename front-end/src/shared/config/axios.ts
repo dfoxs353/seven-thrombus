@@ -31,9 +31,11 @@ axiosInstance.interceptors.response.use(
       !error.config._isRetry
     ) {
       originalRequest._isRetry = true;
+      const refreshToken = localStorage.getItem('refreshToken')
       try {
         const response = await axios.post<TTokenPair>(
           `${BASE_URL}/refresh`,
+          { refreshToken: refreshToken },
           { withCredentials: true }
         );
         localStorage.setItem("token", response.data.accessToken);

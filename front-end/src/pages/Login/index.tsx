@@ -26,6 +26,7 @@ export const LoginPage = () => {
   };
 
   isSuccess && localStorage.setItem("token", data.data.accessToken)
+  isSuccess && localStorage.setItem("refreshToken", data.data.refreshToken)
 
   return (
     <div className="flex h-screen flex-col items-center justify-center p-4">
