@@ -1,9 +1,11 @@
 import { Link } from '@tanstack/react-router';
-import { Form, Typography, Image, Button, Input } from '@/shared/ui';
+import { Form, Typography, Image, Button, Input, ErrorBoundary, Loader } from '@/shared/ui';
 import registration from '@/assets/images/regisration.webp';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { loginSchema } from '@/shared/schema/login';
+import { useSignIn } from '@/features/hooks/useSignIn';
+import { TSignIn } from '@/shared/models/SignIn';
 
 export const LoginPage = () => {
   const {
@@ -15,13 +17,15 @@ export const LoginPage = () => {
     resolver: yupResolver(loginSchema),
     mode: 'onChange'
   });
-
-  const loginValue = watch('login');
+  const { error, data, isError, isPending, mutate, isSuccess } = useSignIn()
+  const loginValue = watch('username');
   const passwordValue = watch('password');
 
-  const onSubmit = (data: any) => {
-    console.log('Форма отправлена', data);
+  const onSubmit = (data: TSignIn) => {
+    mutate(data)
   };
+
+  isSuccess && localStorage.setItem("token", data.data.accessToken)
 
   return (
     <div className="flex h-screen flex-col items-center justify-center p-4">
@@ -34,18 +38,17 @@ export const LoginPage = () => {
         <div className="relative w-full">
           <Input
             placeholder="Введите логин"
-            className={`input w-full ${
-              touchedFields.login && loginValue
-                ? errors.login
+            className={`input w-full ${touchedFields.username && loginValue
+                ? errors.username
                   ? 'border-[var(--error)]'
                   : 'border-[var(--approve)]'
                 : 'border-gray-300'
-            }`}
-            {...register('login')}
+              }`}
+            {...register('username')}
           />
-          {errors.login && (
+          {errors.username && (
             <Typography className="absolute top-[2px] left-[10px] text-[12px] text-[var(--error)]">
-              {errors.login.message}
+              {errors.username.message}
             </Typography>
           )}
         </div>
@@ -54,13 +57,12 @@ export const LoginPage = () => {
           <Input
             type="password"
             placeholder="Введите пароль"
-            className={`input w-full ${
-              touchedFields.password && passwordValue
+            className={`input w-full ${touchedFields.password && passwordValue
                 ? errors.password && passwordValue
                   ? 'border-[var(--error)]'
                   : 'border-[var(--approve)]'
                 : 'border-gray-300'
-            }`}
+              }`}
             {...register('password')}
           />
           {errors.password && (
@@ -71,11 +73,15 @@ export const LoginPage = () => {
         </div>
 
         <Button
-          className="button button-primary"
+          className="button button-primary flex items-center justify-center"
           type="submit"
-          disabled={!isValid}
+          disabled={!isValid || isPending}
         >
-          <Typography as="p">Войти</Typography>
+          {isPending ? (
+            <Loader color="white" size="sm" />
+          ) : (
+            <Typography as="p">Войти</Typography>
+          )}
         </Button>
       </Form>
       <Link to="/registration" className="mt-5">
@@ -83,6 +89,8 @@ export const LoginPage = () => {
           У меня нет аккаунта. Зарегистрироваться
         </Typography>
       </Link>
+      {isError && <ErrorBoundary message={error.message} />}
+      {isSuccess && <ErrorBoundary message={"Вы успешно зашли, но страницы пользователя пока нет"} />}
     </div>
   );
 };

@@ -9,11 +9,11 @@ export const get = async <T>(
   return response;
 };
 
-export const post = async <T>(
+export const post = async <T,R>(
   url: string,
-  data?: object
+  data?: R
 ): Promise<ApiResponse<T>> => {
-  const response = await axiosInstance.post<T>(url, data);
+  const response = await axiosInstance.post(url, data);
   return response;
 };
 

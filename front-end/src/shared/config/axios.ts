@@ -1,36 +1,48 @@
 import axios from 'axios';
 import { TTokenPair } from '../models/TokenPair';
-import { get } from '../api/apiAbstractions';
 
 // Вынести в env, пока в падлу
 const BASE_URL = 'http://85.192.61.121:8085/api';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
-  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-export const refreshAccessTokenFn = async () => {
-  const response = await get<TTokenPair>('/refresh');
-  return response.data;
-};
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
+  (config) => {
+    return config;
   },
   async (error) => {
     const originalRequest = error.config;
-    const errMessage = error.response.data.message as string;
-    if (errMessage.includes('not logged in') && !originalRequest._retry) {
-      originalRequest._retry = true;
-      await refreshAccessTokenFn();
-      return axiosInstance(originalRequest);
+    if (
+      error.response.status == 401 &&
+      error.config &&
+      !error.config._isRetry
+    ) {
+      originalRequest._isRetry = true;
+      try {
+        const response = await axios.post<TTokenPair>(
+          `${BASE_URL}/refresh`,
+          { withCredentials: true }
+        );
+        localStorage.setItem("token", response.data.accessToken);
+        return axiosInstance.request(originalRequest);
+      } catch (e) {
+        console.log("Не авторизован");
+      }
     }
-    return Promise.reject(error);
+    throw error;
   }
 );
 

@@ -28,7 +28,7 @@ export const RegistrationPage = () => {
   const loginValue = watch('login');
   const passwordValue = watch('password');
   const confirmPasswordValue = watch('confirmPassword');
-  const { error, isError, isPending, mutate } = useSignUp();
+  const { error, isError, isPending, mutate, isSuccess } = useSignUp();
 
   const onSubmit = (data: any) => {
     mutate({
@@ -124,6 +124,7 @@ export const RegistrationPage = () => {
       </Link>
 
       {isError && <ErrorBoundary message={error.name} />}
+      {isError && <ErrorBoundary message={'Вы успешно зарегестрировались, перейдите на страницу пользователя и войдите в аккаунт'} />}
     </div>
   );
 };

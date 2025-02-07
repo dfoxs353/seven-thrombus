@@ -20,13 +20,4 @@ export default defineConfig({
       '@widgets': path.resolve(__dirname, './src/widgets')
     }
   },
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://85.192.61.121:8085',
-        changeOrigin: true,
-        secure: false
-      }
-    }
-  }
 });
