@@ -8,6 +8,6 @@ export const useGetUser = () => {
     queryFn: async () => {
       const response = await get<TUser>('/accounts/me');
       return response.data;
-    }
+    },
   });
 };

@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { MainPage } from '../pages/Main';
 
 export const Route = createFileRoute('/')({
-  component: Index
+  component: Index,
 });
 
 function Index() {

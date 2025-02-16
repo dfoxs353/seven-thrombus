@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
 export const loginSchema = yup.object().shape({
-  username: yup.string().min(6, 'Минимум 6 символов').required('Введите логин'),
-  password: yup.string().min(6, 'Минимум 6 символов').required('Введите пароль')
+  username: yup.string().min(3, 'Минимум 3 символова').required('Введите логин'),
+  password: yup.string().min(3, 'Минимум 3 символова').required('Введите пароль'),
 });

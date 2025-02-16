@@ -17,11 +17,18 @@ import { Route as IndexImport } from './routes/index'
 
 // Create Virtual Routes
 
+const UsersLazyImport = createFileRoute('/users')()
 const UserLazyImport = createFileRoute('/user')()
 const RegistrationLazyImport = createFileRoute('/registration')()
 const LoginLazyImport = createFileRoute('/login')()
 
 // Create/Update Routes
+
+const UsersLazyRoute = UsersLazyImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/users.lazy').then((d) => d.Route))
 
 const UserLazyRoute = UserLazyImport.update({
   id: '/user',
@@ -79,6 +86,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserLazyImport
       parentRoute: typeof rootRoute
     }
+    '/users': {
+      id: '/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof UsersLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -89,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginLazyRoute
   '/registration': typeof RegistrationLazyRoute
   '/user': typeof UserLazyRoute
+  '/users': typeof UsersLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -96,6 +111,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginLazyRoute
   '/registration': typeof RegistrationLazyRoute
   '/user': typeof UserLazyRoute
+  '/users': typeof UsersLazyRoute
 }
 
 export interface FileRoutesById {
@@ -104,14 +120,15 @@ export interface FileRoutesById {
   '/login': typeof LoginLazyRoute
   '/registration': typeof RegistrationLazyRoute
   '/user': typeof UserLazyRoute
+  '/users': typeof UsersLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/registration' | '/user'
+  fullPaths: '/' | '/login' | '/registration' | '/user' | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/registration' | '/user'
-  id: '__root__' | '/' | '/login' | '/registration' | '/user'
+  to: '/' | '/login' | '/registration' | '/user' | '/users'
+  id: '__root__' | '/' | '/login' | '/registration' | '/user' | '/users'
   fileRoutesById: FileRoutesById
 }
 
@@ -120,6 +137,7 @@ export interface RootRouteChildren {
   LoginLazyRoute: typeof LoginLazyRoute
   RegistrationLazyRoute: typeof RegistrationLazyRoute
   UserLazyRoute: typeof UserLazyRoute
+  UsersLazyRoute: typeof UsersLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -127,6 +145,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginLazyRoute: LoginLazyRoute,
   RegistrationLazyRoute: RegistrationLazyRoute,
   UserLazyRoute: UserLazyRoute,
+  UsersLazyRoute: UsersLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -142,7 +161,8 @@ export const routeTree = rootRoute
         "/",
         "/login",
         "/registration",
-        "/user"
+        "/user",
+        "/users"
       ]
     },
     "/": {
@@ -156,6 +176,9 @@ export const routeTree = rootRoute
     },
     "/user": {
       "filePath": "user.lazy.tsx"
+    },
+    "/users": {
+      "filePath": "users.lazy.tsx"
     }
   }
 }
