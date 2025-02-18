@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import { deleteRequest} from '@/shared/api/apiAbstractions';
 
-export const useDeleteAllUsersAdmin = (id:number) => {
+export const useDeleteAllUsersAdmin = () => {
   return useMutation({
       mutationKey: ['DeleteUser'],
-      mutationFn: async () => {
+    mutationFn: async (id: number) => {
         const response = await deleteRequest(`/accounts/${id}`);
         return response.data;
       },
