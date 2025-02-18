@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { Form, Typography, Image, Button, Input, ErrorBoundary, Loader } from '@/shared/ui';
 import registration from '@/assets/images/regisration.webp';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -6,91 +6,85 @@ import { useForm } from 'react-hook-form';
 import { loginSchema } from '@/shared/schema/login';
 import { useSignIn } from '@/features/hooks/useSignIn';
 import { TSignIn } from '@/shared/models/SignIn';
+import { useEffect } from 'react';
+import { getSuccessMessage } from '@/features/utils/getSuccessMessage';
 
 export const LoginPage = () => {
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isValid, touchedFields }
+    formState: { errors, isValid, touchedFields },
   } = useForm({
     resolver: yupResolver(loginSchema),
-    mode: 'onChange'
+    mode: 'onChange',
   });
-  const { error, data, isError, isPending, mutate, isSuccess } = useSignIn()
-  const loginValue = watch('username');
-  const passwordValue = watch('password');
+  const { error, data, isError, isPending, mutate, isSuccess } = useSignIn();
+  const [usernameValue, passwordValue] = watch(['username', 'password']);
+  const navigate = useNavigate({ from: '/login' });
 
   const onSubmit = (data: TSignIn) => {
-    mutate(data)
+    mutate(data);
   };
 
-  isSuccess && localStorage.setItem("token", data.data.accessToken)
+  useEffect(() => {
+    if (isSuccess && data) {
+      localStorage.setItem('token', data.data.accessToken);
+      localStorage.setItem('refreshToken', data.data.refreshToken);
+      navigate({ to: '/user' });
+    }
+  }, [isSuccess, data, navigate]);
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center p-4">
-      <Form classname="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+    <div className='flex h-screen flex-col items-center justify-center p-4'>
+      <Form classname='flex flex-col gap-4' onSubmit={handleSubmit(onSubmit)}>
         <Image image={registration}></Image>
-        <Typography as="h1" className="heading mb-3">
+        <Typography as='h1' className='heading mb-3'>
           Добро пожаловать!
         </Typography>
 
-        <div className="relative w-full">
-          <Input
-            placeholder="Введите логин"
-            className={`input w-full ${touchedFields.username && loginValue
-                ? errors.username
-                  ? 'border-[var(--error)]'
-                  : 'border-[var(--approve)]'
-                : 'border-gray-300'
-              }`}
-            {...register('username')}
-          />
-          {errors.username && (
-            <Typography className="absolute top-[2px] left-[10px] text-[12px] text-[var(--error)]">
-              {errors.username.message}
-            </Typography>
+        <Input
+          placeholder="Введите логин"
+          {...register('username')}
+          error={errors.username?.message}
+          successMessage={getSuccessMessage(
+            'username',
+            'Логин заполнен корректно',
+            touchedFields,
+            errors,
+            usernameValue
           )}
-        </div>
+        />
 
-        <div className="relative w-full">
-          <Input
-            type="password"
-            placeholder="Введите пароль"
-            className={`input w-full ${touchedFields.password && passwordValue
-                ? errors.password && passwordValue
-                  ? 'border-[var(--error)]'
-                  : 'border-[var(--approve)]'
-                : 'border-gray-300'
-              }`}
-            {...register('password')}
-          />
-          {errors.password && (
-            <Typography className="absolute top-[2px] left-[10px] text-[12px] text-[var(--error)]">
-              {errors.password.message}
-            </Typography>
+        <Input
+          placeholder="Введите пароль"
+          type='password'
+          {...register('password')}
+          error={errors.password?.message}
+          successMessage={getSuccessMessage(
+            'password',
+            'Пароль заполнен корректно',
+            touchedFields,
+            errors,
+            passwordValue
           )}
-        </div>
+        />
 
         <Button
-          className="button button-primary flex items-center justify-center"
-          type="submit"
+          className='button button-primary flex items-center justify-center'
+          type='submit'
           disabled={!isValid || isPending}
         >
-          {isPending ? (
-            <Loader color="white" size="sm" />
-          ) : (
-            <Typography as="p">Войти</Typography>
-          )}
+          {isPending ? <Loader color='white' size='sm' /> : <Typography as='p'>Войти</Typography>}
         </Button>
       </Form>
-      <Link to="/registration" className="mt-5">
-        <Typography as="p" className="inline">
+      <Link to='/registration' className='mt-5'>
+        <Typography as='p' className='inline'>
           У меня нет аккаунта. Зарегистрироваться
         </Typography>
       </Link>
       {isError && <ErrorBoundary message={error.message} />}
-      {isSuccess && <ErrorBoundary message={"Вы успешно зашли, но страницы пользователя пока нет"} />}
+      {isSuccess && <ErrorBoundary message={'Вы успешно зашли, но страницы пользователя пока нет'} />}
     </div>
   );
 };

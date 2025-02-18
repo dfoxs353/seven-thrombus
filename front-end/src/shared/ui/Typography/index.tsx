@@ -16,5 +16,5 @@ export const Typography = <T extends React.ElementType = 'p'>({
     <Component className={clsx('text-center', classname)} {...props}>
       {children}
     </Component>
-  );
+  ); 
 };

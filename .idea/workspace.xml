@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="802fae6d-394b-46ff-858f-00b99d82c275" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/front-end/src/pages/Login/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/pages/Login/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/src/routeTree.gen.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/routeTree.gen.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/src/shared/api/apiAbstractions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/shared/api/apiAbstractions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/src/shared/config/axios.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/shared/config/axios.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/src/shared/schema/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/src/shared/schema/login.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/vite.config.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Unstate"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/dfoxs353/seven-thrombus.git",
+    "accountId": "783dedd6-2b8c-458b-9ad5-59db00baf764"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2shr85VxPBpDPSaBclgdyoXCRv0" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "FRONT-DEV",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-WS-242.20224.426" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

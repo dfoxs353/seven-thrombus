@@ -2,7 +2,7 @@ import { createLazyFileRoute } from '@tanstack/react-router';
 import { RegistrationPage } from '../pages/Registration';
 
 export const Route = createLazyFileRoute('/registration')({
-  component: RouteComponent
+  component: RouteComponent,
 });
 
 function RouteComponent() {

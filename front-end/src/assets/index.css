@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+
 @theme {
   --white: #fff;
   --main-accent: #509bf8;
@@ -6,6 +7,7 @@
   --additional-dark: #949494;
   --error: #f86650;
   --approve: #09e258;
+  --base-dark: #2A2A2A;
 }
 
 @layer components {
@@ -31,6 +33,7 @@
   .button-primary:disabled {
     pointer-events: none;
   }
+
   .button-secondary {
     background-color: var(--white);
     color: var(--main-accent);
@@ -44,7 +47,7 @@
 
   .heading {
     font-weight: 500;
-    font-size: 2rem;
+    font-size: 1.5rem;
     line-height: 2.125rem;
     text-align: center;
   }
@@ -78,5 +81,45 @@
     font-size: 1rem;
     line-height: 1.2rem;
     color: var(--additional-dark);
+  }
+
+  .text-header {
+    font-weight: 500;
+    font-size: 0.625rem;
+    color: var(--additional-dark);
+    line-height: 0.625rem;
+  }
+
+  .page {
+    position: relative;
+    width: 100%;
+    max-width: 100vw;
+    min-height: 100vh;
+    height: calc(100% + 50px);
+    padding: 1rem;
+  }
+
+  .header {
+    position: fixed;
+    bottom: 1rem;
+    background-color: var(--additional-light);
+    left: 16px;
+    right: 16px;
+    border-radius: 12px;
+  }
+
+  .modal {
+    border: none;
+    padding: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+  }
+  
+  .modal::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
   }
 }

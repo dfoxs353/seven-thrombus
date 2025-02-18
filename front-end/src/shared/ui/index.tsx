@@ -7,15 +7,7 @@ import { Image } from './Image';
 import { Input } from './Input';
 import { ErrorBoundary } from './ErrorBoundary';
 import { Loader } from './Loader';
+import { List } from './List';
+import { UserElement } from './UserElement';
 
-export {
-  Header,
-  Footer,
-  Typography,
-  Button,
-  Form,
-  Image,
-  Input,
-  ErrorBoundary,
-  Loader
-};
+export { Header, Footer, Typography, Button, Form, Image, Input, ErrorBoundary, Loader, List, UserElement };

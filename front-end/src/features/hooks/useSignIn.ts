@@ -5,8 +5,9 @@ import { TTokenPair } from '@/shared/models/TokenPair';
 
 export const useSignIn = () => {
   return useMutation({
+    mutationKey: ['SignIn'],
     mutationFn: (userData: TSignIn) => {
       return post<TTokenPair, TSignIn>('/signin', userData);
-    }
+    },
   });
 };

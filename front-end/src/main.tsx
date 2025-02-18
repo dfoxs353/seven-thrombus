@@ -13,9 +13,9 @@ const queryClient = new QueryClient({
       refetchOnReconnect: false,
       retry: 1,
       staleTime: 5 * 1000,
-      gcTime: 1000 * 60 * 60 * 24
-    }
-  }
+      gcTime: 1000 * 60 * 60 * 24,
+    },
+  },
 });
 
 declare module '@tanstack/react-router' {
@@ -32,6 +32,6 @@ if (!rootElement.innerHTML) {
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
-    </StrictMode>
+    </StrictMode>,
   );
 }

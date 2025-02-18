@@ -1,4 +1,9 @@
 export const ROUTES = {
   HOME: '/',
-  ABOUT: '/about'
+  DISCIPLINES: '/disciplines',
+  USERS: '/users',
+  LOGIN: '/login',
+  SCHEDULE: '/schedule',
+  REGISTRATION: '/registration',
+  USER:'/user',
 };
