@@ -18,7 +18,6 @@ import (
 // @produce json
 // @Param count query int false "Размер выборки. По умолчанию 20"
 // @Param from query int false "Начало выборки. По умолчанию 1"
-// @Param role query int false "Роль пользователей для выборки"
 // @Router /api/accounts [get]
 // @Success 200 {array} users.User
 // @Failure 400 {object} errorx.ResponseError
@@ -50,13 +49,8 @@ func GetUsers(repo *users.Repo) middleware.ErrorHandler {
 			count = countVal
 		}
 
-		var roles []users.Role
-		if r := r.URL.Query().Get("role"); r != "" {
-			roles = append(roles, users.StringToRole(r))
-		}
-
 		// from-1 т.к. offset на 1 меньше, чем мы хотим сделать выборку
-		users, err := repo.GetUsers(r.Context(), from-1, count, nil, roles)
+		users, err := repo.GetUsers(r.Context(), from-1, count, nil, nil)
 		if err != nil {
 			return err
 		}

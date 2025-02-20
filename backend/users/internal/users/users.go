@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"main/internal/groups"
 	"main/internal/jwt"
 	"time"
 
@@ -42,10 +43,11 @@ func StringToRole(s string) Role {
 }
 
 type Service struct {
-	repo  *Repo
-	cost  int
-	token jwt.TokenManager
-	db    *pgxpool.Pool
+	repo       *Repo
+	cost       int
+	token      jwt.TokenManager
+	db         *pgxpool.Pool
+	groupsRepo *groups.Repo
 }
 
 func NewService(
@@ -54,7 +56,7 @@ func NewService(
 	tokenGenerator jwt.TokenManager,
 	db *pgxpool.Pool,
 ) *Service {
-	return &Service{repo, cost, tokenGenerator, db}
+	return &Service{repo, cost, tokenGenerator, db, groups.NewRepo(db)}
 }
 
 func (s *Service) SignUp(
@@ -64,6 +66,7 @@ func (s *Service) SignUp(
 	firstName string,
 	lastName string,
 	roles []Role,
+	group *groups.StudyGroup,
 ) (int, error) {
 	user, err := s.repo.GetUserByUsername(ctx, username)
 	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
@@ -73,12 +76,36 @@ func (s *Service) SignUp(
 		return 0, errorx.BadRequest(fmt.Sprintf(`username '%s' already taken`, username))
 	}
 
+	if group != nil {
+		gr, err := s.groupsRepo.GetStudyGroupByCourseAndTitle(ctx, group.Course, group.Title)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return 0, errorx.BadRequest(groups.ErrGroupIsNotExists.Error())
+			}
+
+			return 0, err
+		}
+		group.Id = gr.Id
+	}
+
 	pwdHash, err := s.hashPassword(password)
 	if err != nil {
 		return 0, err
 	}
 
-	return s.repo.InsertUser(ctx, username, pwdHash, roles, firstName, lastName)
+	id, err := s.repo.InsertUser(ctx, username, pwdHash, roles, firstName, lastName)
+	if err != nil {
+		return 0, err
+	}
+
+	if group != nil {
+		err = s.groupsRepo.InsertStudentIntoStudyGroup(ctx, id, group.Id)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return id, nil
 }
 
 func (s *Service) hashPassword(pwd string) (string, error) {

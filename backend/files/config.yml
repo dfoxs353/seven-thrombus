@@ -1,0 +1,24 @@
+postgres:
+  host: postgres
+  port: 5432
+  username: postgres
+  password: postgres
+  database: postgres
+
+# postgres:
+#   host: 85.192.61.121
+#   port: 55432
+#   username: postgres
+#   password: postgres
+#   database: postgres
+
+server:
+  host: "0.0.0.0"
+  port: 8081
+  shutdownTimeout: 10
+
+minio:
+  endpoint: "http://0.0.0.0:9000"
+  username: admin
+  password: admin
+  bucket: uploads

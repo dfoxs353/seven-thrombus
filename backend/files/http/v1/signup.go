@@ -47,7 +47,6 @@ func SignUp(service *users.Service, defaultRoles []string) middleware.ErrorHandl
 			req.FirstName,
 			req.LastName,
 			maps.Keys(rolesMap),
-			nil,
 		)
 		if err != nil {
 			return err

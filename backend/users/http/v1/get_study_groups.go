@@ -2,7 +2,7 @@ package v1
 
 import (
 	"encoding/json"
-	"main/internal/users"
+	"main/internal/groups"
 	"net/http"
 	"strconv"
 
@@ -10,22 +10,21 @@ import (
 	middleware "gitlab.com/volgaIt/packages/middleware"
 )
 
-// @summary Получение списка пользователей
-// @tags admin
-// @description Получение списка пользователей
-// @id getUsers
+// @summary Получение списка групп обучения
+// @tags studyGroups
+// @description Получение списка групп обучения
+// @id getStudyGroups
 // @accept plain
 // @produce json
 // @Param count query int false "Размер выборки. По умолчанию 20"
 // @Param from query int false "Начало выборки. По умолчанию 1"
-// @Param role query int false "Роль пользователей для выборки"
-// @Router /api/accounts [get]
-// @Success 200 {array} users.User
+// @Router /api/groups [get]
+// @Success 200 {array} groups.StudyGroup
 // @Failure 400 {object} errorx.ResponseError
 // @Failure 401 {object} errorx.ResponseError
 // @Failure 403 {object} errorx.ResponseError
 // @Security ApiKeyAuth
-func GetUsers(repo *users.Repo) middleware.ErrorHandler {
+func GetStudyGroups(repo *groups.Repo) middleware.ErrorHandler {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		var (
 			from  = 1
@@ -50,19 +49,15 @@ func GetUsers(repo *users.Repo) middleware.ErrorHandler {
 			count = countVal
 		}
 
-		var roles []users.Role
-		if r := r.URL.Query().Get("role"); r != "" {
-			roles = append(roles, users.StringToRole(r))
-		}
-
+		from--
 		// from-1 т.к. offset на 1 меньше, чем мы хотим сделать выборку
-		users, err := repo.GetUsers(r.Context(), from-1, count, nil, roles)
+		groups, err := repo.GetStudyGroups(r.Context(), &count, &from)
 		if err != nil {
 			return err
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		return json.NewEncoder(w).Encode(users)
+		return json.NewEncoder(w).Encode(groups)
 	}
 }

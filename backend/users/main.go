@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"main/grpc"
 	"main/http/swagger"
 	v1 "main/http/v1"
+	"main/internal/groups"
 	"main/internal/jwt"
 	"main/internal/middleware"
 	"main/internal/users"
@@ -16,6 +18,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/rs/cors"
 	http_swagger "github.com/swaggo/http-swagger"
 	accounts_proto "gitlab.com/volgaIt/grpc-proto/accounts"
@@ -85,6 +88,8 @@ func main() {
 		jwtManager  = jwt.New(cfg.Tokens.Secret, cfg.Tokens.AccessTTL, cfg.Tokens.RefreshTTL)
 		userService = users.NewService(userRepo, cfg.Cost, jwtManager, db)
 
+		groupsRepo = groups.NewRepo(db)
+
 		// user handlers
 		signUp        = v1.SignUp(userService, cfg.DefaultRoles)
 		signIn        = v1.SignIn(userService)
@@ -101,18 +106,31 @@ func main() {
 		deleteUser = v1.DeleteUserSoft(userRepo)
 	)
 
+	// создание дефолтной группы
+	_, err = groupsRepo.GetStudyGroupByCourseAndTitle(ctx, 4, "45")
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			_, err := groupsRepo.InsertStudyGroup(ctx, 4, "45")
+			if err != nil {
+				slog.WarnContext(ctx, "", "err", err)
+			}
+		} else {
+			slog.WarnContext(ctx, "", "err", err)
+		}
+	}
+
 	// signup default users
-	_, err = userService.SignUp(ctx, "admin", "admin", "Админ", "Админов", []users.Role{users.Admin})
+	_, err = userService.SignUp(ctx, "admin", "admin", "Админ", "Админов", []users.Role{users.Admin}, nil)
 	if err != nil {
 		slog.WarnContext(ctx, "", "err", err)
 	}
 
-	_, err = userService.SignUp(ctx, "teacher", "teacher", "Преподаватель", "Автоматов", []users.Role{users.Teacher})
+	_, err = userService.SignUp(ctx, "teacher", "teacher", "Преподаватель", "Автоматов", []users.Role{users.Teacher}, nil)
 	if err != nil {
 		slog.WarnContext(ctx, "", "err", err)
 	}
 
-	_, err = userService.SignUp(ctx, "student", "student", "Студент", "Отличников", []users.Role{users.Student})
+	_, err = userService.SignUp(ctx, "student", "student", "Студент", "Отличников", []users.Role{users.Student}, &groups.StudyGroup{Course: 4, Title: "45"})
 	if err != nil {
 		slog.WarnContext(ctx, "", "err", err)
 	}
@@ -134,6 +152,11 @@ func main() {
 	srv.Post("/api/accounts", middleware.WrapAuth(mw.WrapErrDetail(createUser), jwtManager, []users.Role{users.Admin}))
 	srv.Put("/api/accounts/{id}", middleware.WrapAuth(mw.WrapErrDetail(updateUser), jwtManager, []users.Role{users.Admin}))
 	srv.Delete("/api/accounts/{id}", middleware.WrapAuth(mw.WrapErrDetail(deleteUser), jwtManager, []users.Role{users.Admin}))
+
+	srv.Post("/api/groups", mw.WrapErrDetail(v1.CreateStudyGroup(groupsRepo)))
+	srv.Get("/api/groups/{course}/{groupName}", mw.WrapErrDetail(v1.GetStudyGroup(groupsRepo)))
+	srv.Delete("/api/groups/{id}", mw.WrapErrDetail(v1.DeleteStudyGroup(groupsRepo)))
+	srv.Get("/api/groups", mw.WrapErrDetail(v1.GetStudyGroups(groupsRepo)))
 
 	swagger.SwaggerInfo.BasePath = fmt.Sprintf("/%s/", ServiceName)
 	srv.Get("/swagger/{*}", cors.AllowAll().Handler(http_swagger.Handler(http_swagger.PersistAuthorization(true))))

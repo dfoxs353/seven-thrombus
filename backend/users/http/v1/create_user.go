@@ -2,8 +2,10 @@ package v1
 
 import (
 	"encoding/json"
+	"main/internal/groups"
 	"main/internal/users"
 	"net/http"
+	"slices"
 
 	"gitlab.com/volgaIt/packages/errorx"
 	middleware "gitlab.com/volgaIt/packages/middleware"
@@ -14,8 +16,10 @@ type AdminUserReq struct {
 	Username  string   `json:"username"`
 	Password  string   `json:"password"`
 	FirstName string   `json:"firstName"`
-	LastName  string   `json:"lastName"`
+	LastName  string   `json:"-"`
 	Roles     []string `json:"roles"`
+	Course    int      `json:"course"`
+	Group     string   `json:"group"`
 }
 
 // @summary Создание пользователя
@@ -43,6 +47,16 @@ func CreateUser(service *users.Service) middleware.ErrorHandler {
 			rolesMap[users.StringToRole(role)] = struct{}{}
 		}
 
+		// если регистрируется студент, то должна быть указана группа
+		// если же регистрируется препод, то пофиг
+		var group *groups.StudyGroup
+		if slices.Contains(req.Roles, string(users.Student)) {
+			group = &groups.StudyGroup{
+				Course: req.Course,
+				Title:  req.Group,
+			}
+		}
+
 		id, err := service.SignUp(
 			r.Context(),
 			req.Username,
@@ -50,6 +64,7 @@ func CreateUser(service *users.Service) middleware.ErrorHandler {
 			req.FirstName,
 			req.LastName,
 			maps.Keys(rolesMap),
+			group,
 		)
 		if err != nil {
 			return err

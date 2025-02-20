@@ -5,38 +5,41 @@ import (
 	"main/internal/users"
 	"net/http"
 
-	errorx "gitlab.com/volgaIt/packages/errorx"
+	"gitlab.com/volgaIt/packages/errorx"
 	middleware "gitlab.com/volgaIt/packages/middleware"
 	"golang.org/x/exp/maps"
 )
 
-type SignUpReq struct {
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
+type AdminUserReq struct {
+	Username  string   `json:"username"`
+	Password  string   `json:"password"`
+	FirstName string   `json:"firstName"`
+	LastName  string   `json:"lastName"`
+	Roles     []string `json:"roles"`
 }
 
-// @summary Регистрация нового пользователя
-// @tags users
-// @description Регистрация нового пользователя.
-// @description Подразумевается, что username является уникальным
-// @id singUp
-// @accept json
+// @summary Создание пользователя
+// @tags admin
+// @description Создание пользователя
+// @id createUser
+// @accept plain
 // @produce json
-// @Param reqBody body SignUpReq true "Запрос на создание пользователя"
-// @Router /api/signup [post]
+// @Param reqBody body AdminUserReq true "Запрос на создание пользователя"
+// @Router /api/accounts [post]
 // @Success 201 {object} int
 // @Failure 400 {object} errorx.ResponseError
-func SignUp(service *users.Service, defaultRoles []string) middleware.ErrorHandler {
+// @Failure 401 {object} errorx.ResponseError
+// @Failure 403 {object} errorx.ResponseError
+// @Security ApiKeyAuth
+func CreateUser(service *users.Service) middleware.ErrorHandler {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		var req SignUpReq
+		var req AdminUserReq
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			return errorx.BadRequest(err.Error())
 		}
 
 		rolesMap := make(map[users.Role]struct{})
-		for _, role := range defaultRoles {
+		for _, role := range req.Roles {
 			rolesMap[users.StringToRole(role)] = struct{}{}
 		}
 
@@ -47,7 +50,6 @@ func SignUp(service *users.Service, defaultRoles []string) middleware.ErrorHandl
 			req.FirstName,
 			req.LastName,
 			maps.Keys(rolesMap),
-			nil,
 		)
 		if err != nil {
 			return err
